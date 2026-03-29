@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Page for Photo Sharing App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 120px;   /* fixed width makes alignment clean */
+            font-weight: bold;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 6px;
+        }
+
+        button {
+            margin-left: 120px; /* align button with inputs */
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Upload Pictures to the Photo Sharing App</h2>
+
+<form onsubmit="uploadImage(event)">
+
+    <div class="form-group">
+        <label for="imageName">Image Name:</label>
+        <input type="text" id="imageName" required>
+    </div>
+
+    <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" id="title" required>
+    </div>
+
+    <div class="form-group">
+        <label for="location">Location:</label>
+        <input type="text" id="location" required>
+    </div>
+
+    <div class="form-group">
+        <label for="myFile">Picture:</label>
+        <input type="file" id="imageInput" name="filename">
+    </div>
+
+    <button>Upload</button>
+
+    <br><br>
+    <img id="preview" width="300"/>
+
+</form>
+
+<script>
+    async function uploadImage(event) {
+
+        event.preventDefault();
+
+        const fileInput = document.getElementById("imageInput");
+        const file = fileInput.files[0];
+    
+        if (!file) {
+            alert("Please select a file");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("image", file);
+    
+        try {
+            const response = await fetch("https://cw2upload-cmegewecfdddbnfw.ukwest-01.azurewebsites.net/upload", {
+                method: "POST",
+                body: formData
+            });
+    
+            const result = await response.json();
+
+            if (response.ok) {
+            document.getElementById("preview").src = result.image_url;
+            alert("Upload successful!");
+        } else {
+            alert("Upload failed: " + result.error);
+        }           
+    
+    
+        } catch (error) {
+            console.error(error);
+            alert("Error uploading image");
+        }
+    }
+    </script>
+
+</body>
+</html>
