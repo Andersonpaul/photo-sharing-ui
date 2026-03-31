@@ -82,7 +82,7 @@
     <script>
     document.addEventListener("DOMContentLoaded", async function() {
         try {
-            const response = await fetch("https://cw2upload-cmegewecfdddbnfw.ukwest-01.azurewebsites.net/gallery");
+            const response = await fetch("https://cw2upload-bcgrhfemchgdc7aj.norwayeast-01.azurewebsites.net/gallery");
 
             if (!response.ok) {
                 throw new Error("Failed to fetch images");
@@ -121,7 +121,7 @@
     formData.append("query", textbox.value);
 
     try {
-            const response = await fetch("https://cw2upload-cmegewecfdddbnfw.ukwest-01.azurewebsites.net/search", {
+            const response = await fetch("https://cw2upload-bcgrhfemchgdc7aj.norwayeast-01.azurewebsites.net/search", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json"
