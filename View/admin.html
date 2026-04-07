@@ -78,9 +78,13 @@
     
         const formData = new FormData();
         formData.append("image", file);
+        formData.append("name", document.getElementById("imageName").value)
+        formData.append("caption", document.getElementById("title").value)
+        formData.append("area_location", document.getElementById("location").value)
+
     
         try {
-            const response = await fetch("https://cw2upload-bcgrhfemchgdc7aj.norwayeast-01.azurewebsites.net/upload", {
+            const response = await fetch("https://cw2upload-bcgrhfemchgdc7aj.norwayeast-01.azurewebsites.net:8000/upload", {
                 method: "POST",
                 body: formData
             });
