@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fafafa;
+            background-color: #e6f4ea; /* light green */
             margin: 0;
             padding: 20px;
         }
@@ -25,16 +26,17 @@
 
         .image-block {
             width: 100%;
-            aspect-ratio: 1 / 1;   /* Makes square blocks */
             overflow: hidden;
             border-radius: 8px;
-            background-color: #eee;
+            background-color: #fff;
+            border: 1px solid #ddd;
         }
 
         .image-block img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;   /* Crops like Instagram */
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
             transition: transform 0.3s ease;
         }
 
@@ -43,69 +45,124 @@
         }
 
         .header-bar {
-    max-width: 1000px;
-    margin: 0 auto 20px auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+            max-width: 1000px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.header-bar h2 {
-    margin: 0;
-}
+        .header-bar h2 {
+            margin: 0;
+        }
 
-.search-box {
-    display: flex;
-    gap: 8px;
-}
+        .search-box {
+            display: flex;
+            gap: 8px;
+        }
 
-.search-box input {
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
+        .search-box input {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
 
-.search-box button {
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: none;
-    background-color: #0078d4;
-    color: white;
-    cursor: pointer;
-}
+        .search-box button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: #0078d4;
+            color: white;
+            cursor: pointer;
+        }
 
-.search-box button:hover {
-    background-color: #005fa3;
-}
+        .search-box button:hover {
+            background-color: #005fa3;
+        }
 
-.comment-box {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+        /* ---- Like & Comment styles ---- */
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #fff;
+        }
 
-.comment-box textarea {
-    width: 100%;
-    border-radius: 6px;
-    padding: 5px;
-    border: 1px solid #ccc;
-}
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #555;
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
 
-.comment-box button {
-    align-self: flex-end;
-    padding: 5px 10px;
-    border: none;
-    background-color: #28a745;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        .action-btn:hover {
+            background-color: #f0f0f0;
+        }
 
-.comment-box button:hover {
-    background-color: #218838;
-}
+        .like-btn.liked .heart {
+            color: #e74c3c;
+        }
 
+        .comment-panel {
+            border-top: 1px solid #eee;
+            padding: 10px 12px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: #fff;
+        }
+
+        .comment-panel.open {
+            display: flex;
+        }
+
+        .comment-item {
+            font-size: 13px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 6px 8px;
+        }
+
+        .comment-item .ts {
+            font-size: 11px;
+            color: #999;
+            margin-left: 6px;
+        }
+
+        .comment-input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .comment-input-row textarea {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 13px;
+            resize: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .comment-input-row button {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 12px;
+            background: #fff;
+        }
+
+        .comment-input-row button:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 
     <script>
@@ -123,47 +180,76 @@
 
             result.forEach(element => {
 
+                // Outer card
                 const block = document.createElement('div');
                 block.className = "image-block";
 
+                // Image
                 const img = document.createElement('img');
-                img.src = element; 
-
-                img.addEventListener("click", function () {
-
-                // Prevent duplicate comment boxes
-                if (block.querySelector(".comment-box")) return;
-
-                const commentBox = document.createElement("div");
-                commentBox.className = "comment-box";
-
-                const textarea = document.createElement("textarea");
-                textarea.placeholder = "Write a comment...";
-                textarea.rows = 3;
-
-                const button = document.createElement("button");
-                button.textContent = "Post";
-
-                button.onclick = function () {
-                    const commentText = textarea.value;
-                    if (commentText.trim() !== "") {
-                        const comment = document.createElement("p");
-                        comment.textContent = commentText;
-                        commentBox.appendChild(comment);
-                        textarea.value = "";
-                    }
-                };
-
-                commentBox.appendChild(textarea);
-                commentBox.appendChild(button);
-
-                block.appendChild(commentBox);
-            });
-
-                
+                img.src = element;
                 block.appendChild(img);
-                container.appendChild(block);
 
+                // --- Action bar (Like + Comment toggle) ---
+                const actions = document.createElement('div');
+                actions.className = "card-actions";
+
+                // Like button
+                const likeBtn = document.createElement('button');
+                likeBtn.className = "action-btn like-btn";
+                likeBtn.dataset.likes = "0";
+                likeBtn.innerHTML = '<span class="heart" style="font-size:16px">&#9825;</span><span class="like-count">0</span>';
+                likeBtn.addEventListener('click', () => {
+                    const liked = likeBtn.classList.toggle('liked');
+                    const n = parseInt(likeBtn.dataset.likes) + (liked ? 1 : -1);
+                    likeBtn.dataset.likes = n;
+                    likeBtn.querySelector('.like-count').textContent = n;
+                    likeBtn.querySelector('.heart').innerHTML = liked ? '&#9829;' : '&#9825;';
+                });
+
+                // Comment toggle button
+                const commentToggle = document.createElement('button');
+                commentToggle.className = "action-btn";
+                commentToggle.innerHTML = '<span style="font-size:15px">&#128172;</span><span>Comment</span>';
+
+                actions.appendChild(likeBtn);
+                actions.appendChild(commentToggle);
+                block.appendChild(actions);
+
+                // --- Comment panel ---
+                const panel = document.createElement('div');
+                panel.className = "comment-panel";
+
+                const commentList = document.createElement('div');
+
+                const inputRow = document.createElement('div');
+                inputRow.className = "comment-input-row";
+
+                const textarea = document.createElement('textarea');
+                textarea.rows = 2;
+                textarea.placeholder = "Write a comment...";
+
+                const postBtn = document.createElement('button');
+                postBtn.textContent = "Post";
+                postBtn.addEventListener('click', () => {
+                    if (!textarea.value.trim()) return;
+                    const item = document.createElement('div');
+                    item.className = "comment-item";
+                    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    item.innerHTML = textarea.value + '<span class="ts">' + now + '</span>';
+                    commentList.appendChild(item);
+                    textarea.value = "";
+                });
+
+                inputRow.appendChild(textarea);
+                inputRow.appendChild(postBtn);
+                panel.appendChild(commentList);
+                panel.appendChild(inputRow);
+                block.appendChild(panel);
+
+                // Toggle comment panel
+                commentToggle.addEventListener('click', () => panel.classList.toggle('open'));
+
+                container.appendChild(block);
             });
 
         } catch (error) {
@@ -173,25 +259,22 @@
     });
 
     async function searchImage() {
-    const container = document.getElementById('image-container');
-    container.innerHTML = "";
+        const container = document.getElementById('image-container');
+        container.innerHTML = "";
 
-    var textbox = document.getElementById("img_name")
+        var textbox = document.getElementById("img_name");
 
-    const formData = new FormData();
-    formData.append("query", textbox.value);
-
-    try {
+        try {
             const response = await fetch("https://cw2upload-bcgrhfemchgdc7aj.norwayeast-01.azurewebsites.net/find", {
                 method: "POST",
                 headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                query: textbox.value
-            })
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    query: textbox.value
+                })
             });
-    
+
             const result = await response.json();
 
             if (response.ok) {
@@ -199,32 +282,30 @@
                 block.className = "image-block";
 
                 const img = document.createElement('img');
-                img.src = result['imageUrl']; 
+                img.src = result['imageUrl'];
 
                 block.appendChild(img);
                 container.appendChild(block);
-        } else {
-            alert("search failed: " + result.error);
-        }           
-    
-    
+            } else {
+                alert("search failed: " + result.error);
+            }
+
         } catch (error) {
             console.error(error);
             alert("Error searching ");
         }
-}
+    }
     </script>
 </head>
 
 <body>
     <div class="header-bar">
-    <h2>Picture Gallery</h2>
-
-    <div class="search-box">
-        <input type="text" id="img_name" placeholder="Search image...">
-        <button type="button" id = "searchBtn">Search</button>
+        <h2>Picture Gallery</h2>
+        <div class="search-box">
+            <input type="text" id="img_name" placeholder="Search image...">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
     </div>
-</div>
     <div id="image-container"></div>
 </body>
 </html>

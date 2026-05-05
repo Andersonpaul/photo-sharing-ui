@@ -1,34 +1,291 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login Page</title>
+    <title>Login — Photo Share</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #f5f0eb;
+            --card: #ffffff;
+            --border: rgba(0,0,0,0.08);
+            --accent: #5c7a5c;
+            --accent-light: rgba(92,122,92,0.1);
+            --accent-hover: #4a6449;
+            --text: #1e1e1e;
+            --muted: #888;
+            --input-bg: #faf8f6;
+            --radius: 12px;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Soft background blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.45;
+            z-index: 0;
+        }
+        .blob-1 {
+            width: 500px; height: 500px;
+            background: #d4e8d4;
+            top: -100px; left: -100px;
+        }
+        .blob-2 {
+            width: 400px; height: 400px;
+            background: #e8d9c8;
+            bottom: -80px; right: -80px;
+        }
+        .blob-3 {
+            width: 300px; height: 300px;
+            background: #c8d8e8;
+            top: 50%; left: 60%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Subtle dot pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+            z-index: 0;
+        }
+
+        .card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 420px;
+            margin: 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px 44px 44px;
+            box-shadow: 0 4px 40px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+            animation: riseUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes riseUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Thin green top accent line */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 15%; right: 15%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 3px;
+        }
+
+        .icon-wrap {
+            width: 52px;
+            height: 52px;
+            background: var(--accent-light);
+            border: 1px solid rgba(92,122,92,0.25);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+
+        .icon-wrap svg {
+            width: 26px;
+            height: 26px;
+            stroke: var(--accent);
+            fill: none;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.2px;
+            margin-bottom: 5px;
+        }
+
+        .card-sub {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 300;
+            margin-bottom: 34px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid #e0dbd4;
+            border-radius: var(--radius);
+            padding: 13px 16px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input::placeholder { color: #bbb; }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(92,122,92,0.12);
+        }
+
+        .login-btn {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .login-btn:hover  { background: var(--accent-hover); }
+        .login-btn:active { transform: scale(0.98); }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+            color: #ccc;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #ede8e2;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .footer-note span {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .footer-note span:hover { text-decoration: underline; }
+
+        .error-msg {
+            display: none;
+            font-size: 13px;
+            color: #c0392b;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: rgba(192,57,43,0.07);
+            border: 1px solid rgba(192,57,43,0.18);
+            border-radius: 8px;
+        }
+    </style>
+
     <script>
         function checkLogin(event) {
-            event.preventDefault(); // Prevent form from submitting normally
+            event.preventDefault();
 
-            var username = document.getElementById("username").value;
+            const username = document.getElementById("username").value;
+            const errMsg   = document.getElementById("error-msg");
+
+            errMsg.style.display = "none";
 
             if (username === "admin") {
                 window.location.href = "admin.html";
-            } else {
+            } else if (username.trim() !== "") {
                 window.location.href = "user.html";
+            } else {
+                errMsg.style.display = "block";
             }
         }
     </script>
 </head>
 <body>
 
-    <h2>CW2 - PHOTO SHARING APP LOGIN PAGE</h2>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 
-    <form onsubmit="checkLogin(event)">
-        <label for="username">Username:</label>
-        <input type="text" id="username" required>
-        <br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
-        <br><br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="card">
+
+        <div class="icon-wrap">
+            <svg viewBox="0 0 24 24">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+            </svg>
+        </div>
+
+        <p class="card-title">Welcome back</p>
+        <p class="card-sub">Sign in to your photo sharing account</p>
+
+        <form onsubmit="checkLogin(event)">
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <div id="error-msg" class="error-msg">Please enter a valid username.</div>
+
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+        <p class="footer-note">Don't have an account? <span>Create one</span></p>
+
+    </div>
 
 </body>
 </html>
