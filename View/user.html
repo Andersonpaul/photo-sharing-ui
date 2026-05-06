@@ -61,6 +61,12 @@
             gap: 8px;
         }
 
+        select.action-btn {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 13px;
+        }
+
         .search-box input {
             padding: 6px 10px;
             border-radius: 6px;
@@ -193,17 +199,29 @@
                 const actions = document.createElement('div');
                 actions.className = "card-actions";
 
-                // Like button
-                const likeBtn = document.createElement('button');
-                likeBtn.className = "action-btn like-btn";
-                likeBtn.dataset.likes = "0";
-                likeBtn.innerHTML = '<span class="heart" style="font-size:16px">&#9825;</span><span class="like-count">0</span>';
-                likeBtn.addEventListener('click', () => {
-                    const liked = likeBtn.classList.toggle('liked');
-                    const n = parseInt(likeBtn.dataset.likes) + (liked ? 1 : -1);
-                    likeBtn.dataset.likes = n;
-                    likeBtn.querySelector('.like-count').textContent = n;
-                    likeBtn.querySelector('.heart').innerHTML = liked ? '&#9829;' : '&#9825;';
+                // Rating dropdown (1–10)
+                const ratingSelect = document.createElement('select');
+                ratingSelect.className = "action-btn";
+
+                // Default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "Rate (1–10)";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                ratingSelect.appendChild(defaultOption);
+
+                // Add options 1–10
+                for (let i = 1; i <= 10; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    ratingSelect.appendChild(option);
+                }
+
+                // Optional: handle rating change
+                ratingSelect.addEventListener('change', () => {
+                    console.log("User rated:", ratingSelect.value);
                 });
 
                 // Comment toggle button
@@ -211,7 +229,7 @@
                 commentToggle.className = "action-btn";
                 commentToggle.innerHTML = '<span style="font-size:15px">&#128172;</span><span>Comment</span>';
 
-                actions.appendChild(likeBtn);
+                actions.appendChild(ratingSelect);
                 actions.appendChild(commentToggle);
                 block.appendChild(actions);
 
@@ -278,14 +296,16 @@
             const result = await response.json();
 
             if (response.ok) {
-                const block = document.createElement('div');
-                block.className = "image-block";
+                result.imageUrl.forEach(url => {
+                    const block = document.createElement('div');
+                    block.className = "image-block";
 
-                const img = document.createElement('img');
-                img.src = result['imageUrl'];
+                    const img = document.createElement('img');
+                    img.src = url;
 
-                block.appendChild(img);
-                container.appendChild(block);
+                    block.appendChild(img);
+                    container.appendChild(block);
+                });
             } else {
                 alert("search failed: " + result.error);
             }
